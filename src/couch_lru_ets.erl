@@ -79,7 +79,8 @@ to_list({Table, Head, Tail}) when is_binary(Head), is_binary(Tail) ->
     to_list(Table, Head, []).
 
 
-to_list(_Table, undefined, Nodes) ->
+to_list(Table, undefined, Nodes) ->
+    true = length(Nodes) == ets:info(Table, size),
     lists:reverse(Nodes);
 to_list(Table, Curr, Nodes) when is_binary(Curr) ->
     false = lists:member(Curr, Nodes),

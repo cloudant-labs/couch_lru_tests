@@ -34,7 +34,7 @@ push(DbName, {Tree0, Dict0}) ->
 pop({Tree0, Dict0}) ->
     case gb_trees:size(Tree0) of
         Size when Size > 0 ->
-            {_Lru, DbName, Tree1} = gb_trees:take_largest(Tree0),
+            {_Lru, DbName, Tree1} = gb_trees:take_smallest(Tree0),
             Dict1 = dict:erase(DbName, Dict0),
             {DbName, {Tree1, Dict1}};
         0 ->
@@ -60,6 +60,6 @@ to_list({Tree0, _}) ->
 
 
 to_list(none, Acc) ->
-    lists:reverse(Acc);
+    Acc;
 to_list({_Lru, DbName, Iter}, Acc) ->
     to_list(gb_trees:next(Iter), [DbName | Acc]).
