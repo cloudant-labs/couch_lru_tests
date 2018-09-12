@@ -26,7 +26,7 @@
 }).
 
 
--define(TEST_MOD, couch_lru_dict).
+-define(TEST_MOD, couch_lru_ets).
 
 
 couch_lru_works_test_() ->

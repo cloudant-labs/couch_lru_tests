@@ -96,7 +96,7 @@ remove(DbName, {Table, Head, Tail}) when is_binary(DbName) ->
             {Table, Head, Tail};
         Node ->
             ok = set_next(Table, Node#node.prev, Node#node.next),
-            ok = set_next(Table, Node#node.next, Node#node.prev),
+            ok = set_prev(Table, Node#node.next, Node#node.prev),
             ok = del_node(Table, Node),
             NewHead = if DbName /= Head -> Head; true ->
                 Node#node.next
@@ -144,11 +144,9 @@ add_node(Table, #node{} = Node) ->
     ok.
 
 
-del_node(Table, DbName) when is_binary(DbName) ->
-    del_node(Table, #node{next = '_', prev = '_'});
 del_node(Table, #node{} = Node) ->
     MSpec = {Node, [], [true]},
-    1 = ets:select_delete(Table, MSpec),
+    1 = ets:select_delete(Table, [MSpec]),
     ok.
 
 
