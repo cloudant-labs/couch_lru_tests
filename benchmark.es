@@ -37,7 +37,8 @@ main(_) ->
     Sizes = shuffle(?SIZES),
     lists:foreach(fun(Mod) ->
         Results = lists:map(fun(Size) ->
-            bench(Mod, Size)
+            {_, Ref} = spawn_monitor(fun() -> bench(Mod, Size) end),
+            receive {'DOWN', Ref, _, _, Result} -> Result end
         end, Sizes),
         display(Mod, Results)
     end, TestMods).
@@ -48,7 +49,7 @@ bench(Mod, Size) ->
     {ITime, Lru1} = timer:tc(?MODULE, benchmark_insert, [Mod, Lru0, Size]),
     {UTime, Lru2} = timer:tc(?MODULE, benchmark_update, [Mod, Lru1, Size, ?OP_COUNT]),
     {DTime, _Lru3} = timer:tc(?MODULE, benchmark_drain, [Mod, Lru2, Size]),
-    {Size, ITime, UTime, DTime}.
+    exit({Size, ITime, UTime, DTime}).
 
 
 benchmark_insert(_Mod, Lru, 0) ->
