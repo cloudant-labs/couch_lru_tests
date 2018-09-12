@@ -37,7 +37,7 @@ couch_lru_works_test_() ->
             true,
             proper:quickcheck(
                 ?MODULE:couch_lru_works(),
-                [{to_file, user}, {numtests, 100000}]))
+                [{to_file, user}, {numtests, 1000000}]))
     }.
 
 
@@ -55,21 +55,26 @@ couch_lru_works() ->
 
 
 show_error(Cmds, History, State, Result) ->
-    io:format(standard_error, "~n~n", []),
-    io:format(standard_error, "Commands:~n", []),
-    lists:foreach(fun(Name) ->
-        io:format(standard_error, "    ~w~n", [Name])
+    CmdStrs = lists:map(fun(C) ->
+        io_lib:format("    ~w\n", [C])
     end, Cmds),
-    io:format(standard_error, "~n", []),
-    io:format(standard_error, "History:~n", []),
-    lists:foreach(fun(H) ->
-        io:format(standard_error, "    ~w~n", [H])
+    HistStrs = lists:map(fun({S, V}) ->
+        io_lib:format("    ~w\n    ~w\n\n", [S, V])
     end, History),
-    io:format(standard_error, "~n", []),
-    io:format(standard_error, "State:~n    ~w~n", [State]),
-    io:format(standard_error, "~n", []),
-    io:format(standard_error, "Result:~n    ~w~n", [Result]),
-    io:format(standard_error, "~n~n", []).
+    Lines = [
+        "\n\n",
+        "Commands:\n",
+        CmdStrs,
+        "\n",
+        "History:\n",
+        HistStrs,
+        "\n",
+        io_lib:format("State:\n    ~w\n", [State]),
+        "\n",
+        io_lib:format("Result:\n    ~w\n", [Result]),
+        "\n\n"
+    ],
+    io:format(standard_error, Lines, []).
 
 
 initial_state() ->
