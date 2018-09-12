@@ -1,0 +1,7 @@
+{application, couch_lru_tests, [
+    {description, "Yep."},
+    {vsn, "0.0.0"},
+    {registered, []},
+    {applications, [kernel, stdlib]},
+    {licenses, ["ALSv2"]}
+]}.

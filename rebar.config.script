@@ -1,0 +1,13 @@
+PlatformDefines = [
+   {platform_define, "^R16", 'PRE18TIMEFEATURES'},
+   {platform_define, "^17", 'PRE18TIMEFEATURES'}
+],
+
+AddConfig = [
+    {erl_opts, PlatformDefines},
+    {eunit_compile_opts, PlatformDefines}
+],
+
+lists:foldl(fun({K, V}, CfgAcc) ->
+    lists:keystore(K, 1, CfgAcc, {K, V})
+end, CONFIG, AddConfig).
